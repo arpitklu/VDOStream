@@ -1,13 +1,14 @@
+import { useImperativeHandle } from "../lib/stream.js";
 import User from "../models/User.js"
 import jwt from "jsonwebtoken";
 
 
 export async function signup(req,res){
     // res.send("Signup Route !!")
-    const {email, password, fullname} = req.body
+    const {email, password, fullName} = req.body
 
     try{
-        if(!email || !password || !fullname){
+        if(!email || !password || !fullName){
             return res.status(400).json({message: "All fields are required !!"});
         }
         if(password.length < 6){
@@ -24,19 +25,41 @@ export async function signup(req,res){
         }
 
         const idx = Math.floor(Math.random()*100)+1; //generate a number between 1-100
-        const randAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+        const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
 
-        const newUser = new User.create({
+        // const newUser = new User.create({
+        //     email,
+        //     fullName,
+        //     password,
+        //     profilePic: randomAvatar,            
+        // })
+
+        const newUser = new User({
             email,
-            fullname,
+            fullName,
             password,
-            profilePic: randAvatar,            
-        })
+            profilePic: randomAvatar,
+        });
+
+        await newUser.save();
+
 
         //TODO: CREATE THE USER IN STREAM AS WELL
 
+        try{
+
+            await upsertStreamUser({
+            id:newUser._id.toString(),
+            name: newUser.fullName,
+            image: newUser.profilePic || ","
+        });
+        console.log(`Stream User Created for ${newUser.fullName}`);
+        }catch (error){
+            console.log("Error Creating Stream User !!")
+        }
+
         const token = jwt.sign({userId:newUser._id},process.env.JWT_SECRET_KEY,{
-            expressIn: "7d"
+            expiresIn: "7d"
         })
 
         res.cookie("jwt",token,{
@@ -55,9 +78,38 @@ export async function signup(req,res){
 }
 
 export async function login(req,res){
-    res.send("Login Route !!")
+    try{
+        const { email, password } = req.body;
+        if(!email || !password){
+            res.status(400).json({message:"All fields are required!!"});
+        }
+
+        const user = await User.findOne({email});
+        if(!user) return res.status(404).json({message:"Email or Password is incorrect !!"});
+
+        const isPasswordCorrect = await user.matchPassword(password);
+
+        if(!isPasswordCorrect) return res.status(401).json({message:"Email or Password is incorrect!!"});
+
+        const token = jwt.sign({userId: user._id},process.env.JWT_SECRET_KEY,{
+            expiresIn: "7d"
+        });
+
+        res.cookie("jwt",token,{
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true, //prevent XSS attacks
+            sameSite: "strict", //prevent CSRF attack
+            secure: process.env.NODE_ENV === "production"
+        });
+        res.status(200).json({success: true, user});
+    }catch(error){
+        console.log("Error in login controller", error.message);
+        res.status(500).json({message: "Internal Server Error !!"});
+    }
 }
 
 export function logout(req,res){
-    res.send("Logout Route !!")
+    res.clearCookie("jwt");
+    res.status(200).json({success: true, message: "Logout Successful !!"})
 }
+
