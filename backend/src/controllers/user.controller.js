@@ -19,7 +19,7 @@ export async function getRecommendedUsers(req, res){
         res.status(200).json(recommendedUsers);
     } catch (error) {
         console.log("Error in getRecommendedUsers controller !!", error.message);
-        res.status(500).json({message: "Internak Server Error !!"});
+        res.status(500).json({message: "Internal Server Error !!"});
     }
 }
 
