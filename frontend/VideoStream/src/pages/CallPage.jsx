@@ -1,7 +1,8 @@
-
-
+import React from "react";
 const CallPage = () => {
-    <div>CallPage</div>
+    return(
+        <h1>CallPage</h1>
+    )
 }
 
-export default CallPage
+export default CallPage;
