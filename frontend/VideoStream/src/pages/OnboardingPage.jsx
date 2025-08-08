@@ -1,6 +1,6 @@
 
 const OnboardingPage = () => {
-    return <div>OnboardingPage</div>
+    return <h1>Onboarding Page!!</h1>
 }
 
 export default OnboardingPage

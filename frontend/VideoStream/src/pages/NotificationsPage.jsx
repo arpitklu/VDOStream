@@ -1,6 +1,6 @@
 
 const NotificationsPage = () => {
-    return <div>NotificationsPage</div>
+    return <h1>Notifications Page!!</h1>
 }
 
 export default NotificationsPage
