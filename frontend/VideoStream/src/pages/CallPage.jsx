@@ -1,7 +1,7 @@
 import React from "react";
 const CallPage = () => {
     return(
-        <h1>CallPage</h1>
+        <h1>Call Page!!</h1>
     )
 }
 
