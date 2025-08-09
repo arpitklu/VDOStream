@@ -7,13 +7,29 @@ import LoginPage from "./pages/LoginPage.jsx"
 import NotificationsPage from "./pages/NotificationsPage.jsx"
 import OnboardingPage from "./pages/OnboardingPage.jsx"
 
-import toast, { Toaster } from "react-hot-toast"
-
+import { Toaster } from "react-hot-toast"
+import { useQuery } from '@tanstack/react-query'
+import { axiosInstance } from './lib/axios.js'
 
 const App = () => {
+
+  //react query or transtack query
+
+
+  const {data, isLoading, error, } = useQuery({
+    queryKey:["todos"],
+    queryFn: async() => {
+      const res = await axiosInstance.get("/auth/me");
+      return res.data;
+    },
+    retry: false, //auth check
+  });
+
+
+  console.log(data);
+
   return (
     <div className='h-screen' data-theme="night">
-      <button onClick={() => toast.error("Hellow World !!")}>Create a Toast</button>
       <Routes>
         <Route path='/' element={<HomePage />}/>
         <Route path='/signup' element={<SignupPage />}/>
