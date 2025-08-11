@@ -1,7 +1,7 @@
-import {ShipWheelIcon} from "lucide-react";
+import {ShipWheelIcon } from "lucide-react";
 import { useState } from "react";
-import { Link} from "react-router";
-import { useMutation, useQueryClient} from "@tanstack/react-query";
+import { Link } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup } from "../lib/api";
 
 const SignupPage = () => {
@@ -54,8 +54,10 @@ const SignupPage = () => {
                                 </p>
                             </div>
 
-                            {/* NAME */}
+                            
                             <div className="space-y-3">
+
+                                {/* NAME */}
                                 <div className="form-control w-full">
                                     <label className="label">
                                         <span className="label-text">Full Name</span>
