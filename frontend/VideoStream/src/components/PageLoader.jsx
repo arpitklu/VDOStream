@@ -9,6 +9,7 @@ const PageLoader = () => {
         <LoaderIcon className='animate-spin size-10 text-primary' />
 
     </div>
+    // TODO
   )
 }
 
